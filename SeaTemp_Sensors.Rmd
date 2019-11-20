@@ -1,0 +1,56 @@
+---
+title: "SeaTemp_Sensors"
+author: "Callie Steffen,"
+date: "11/19/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+##Loading Packages
+
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+
+##reading in CSVs
+
+sensor_1_june5 <- read_csv("seawatertemp_2018_06_05.csv")
+sensor_1_june6<- read_csv("seawatertemp_2018_06_06.csv")
+sensor_4_may22<-read_csv("seawatertemp_2018_05_22_2.csv")
+sensor_5_may22<-read_csv("seawatertemp_2018_05_22.csv")
+sensor_5_may23<-read_csv("seawatertemp_2018_05_23.csv")
+
+
+## Now lets combine them all together, although we may do seperate analysis in the future for each individual pi for the students
+
+all_temp_data <- rbind(sensor_1_june5,sensor_1_june6,sensor_4_may22,sensor_5_may22,sensor_5_may23)
+
+
+
+
+```
+
+```{r}
+##Exploratory analysis: mean, median, mode
+
+mean <-mean(all_temp_data$temperature) #25.528
+mode <-mode(all_temp_data$temperature)
+median <- median(all_temp_data$temperature) #26
+
+## plot by day and temperature
+
+temp_plot <- ggplot(all_temp_data, aes(x=date, y=temperature))+
+  geom_point()+
+  labs(x="Day", y="Temperature (celcius)", title="Sea Water Temperature in Hawaii")+
+  theme_classic()
+
+temp_plot
+
+
+
+
+```
+
