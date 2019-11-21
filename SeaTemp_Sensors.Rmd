@@ -8,12 +8,14 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 ```{r}
 ##Loading Packages
 
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(lubridate)
 
 ##reading in CSVs
 
@@ -23,11 +25,21 @@ sensor_4_may22<-read_csv("seawatertemp_2018_05_22_2.csv")
 sensor_5_may22<-read_csv("seawatertemp_2018_05_22.csv")
 sensor_5_may23<-read_csv("seawatertemp_2018_05_23.csv")
 
+##adding column for sensor number
+sensor_1_june5$sensor=1
+sensor_1_june6$sensor=1
+sensor_4_may22$sensor=4
+sensor_5_may22$sensor=5
+sensor_5_may23$sensor=5
+
 
 ## Now lets combine them all together, although we may do seperate analysis in the future for each individual pi for the students
 
 all_temp_data <- rbind(sensor_1_june5,sensor_1_june6,sensor_4_may22,sensor_5_may22,sensor_5_may23)
 
+##arranging by date
+all_temp_data %>% 
+  arrange(date)
 
 
 
@@ -43,11 +55,22 @@ median <- median(all_temp_data$temperature) #26
 ## plot by day and temperature
 
 temp_plot <- ggplot(all_temp_data, aes(x=date, y=temperature))+
-  geom_point()+
-  labs(x="Day", y="Temperature (celcius)", title="Sea Water Temperature in Hawaii")+
+  geom_point(aes(color=date))+
+  labs(x="Day", y="Temperature (celcius)", title="Sea Water Temperature in Papahānaumokuākea Marine National Monument")+
+   scale_y_continuous(expand = c(0,0), limits=c(20, 35), breaks = seq(0,35, 2)) +
   theme_classic()
 
 temp_plot
+
+
+```
+
+```{r}
+
+##Looking into how often the sensor recorded temperature and for what duration of time (battery life)
+
+sensor_4_may22 %>% 
+ interval(hms(00:09:18), end= NULL)
 
 
 
